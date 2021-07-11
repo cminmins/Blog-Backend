@@ -30,15 +30,7 @@ public class UserRegister {
         this.userRegisterService = userRegisterService;
     }
 
-    public String toToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getId())
-                .setExpiration(new Date(System.currentTimeMillis() + 86400 * 1000))
-                .signWith(SignatureAlgorithm.HS512, "nRvyYC4soFxBdZ-F-5Nnzz5USXstR1YylsTd-mA0aKtI9HUlriGrtkf-TiuDapkLiUCogO3JOK7kwZisrHp6wA")
-                .compact();
-    }
-
-    private Map<String, Object> userResponse(UserToken userData) {
+    private Map<String, Object> userResponse(UserData userData) {
         return new HashMap<String, Object>() {
             {
                 put("user", userData);
@@ -49,14 +41,8 @@ public class UserRegister {
     @PostMapping("/users")
     public ResponseEntity createUser(@Valid @RequestBody RequestUserRegister requestUserRegister) {
         User user = userRegisterService.createUser(requestUserRegister);
-        UserData userData = new UserData();
-        UserToken userToken = new UserToken(userData, toToken(user));
-        return ResponseEntity.status(201).body(userResponse(userToken));
-    }
-
-    @GetMapping("/hello")
-    public ResponseEntity hello() {
-        return ResponseEntity.status(200).body("world");
+        UserData userData = new UserData(user.getUsername(), user.getEmail(), user.getBio(), user.getImage());
+        return ResponseEntity.status(201).body(userResponse(userData));
     }
 
 }

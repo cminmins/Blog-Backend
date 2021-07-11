@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserData {
 //    private String id;
-    private String username = "asd";
-    private String email = "loye@aasd.com";
-    private String bio = "";
-    private String image = "asd";
+    private String username = " ads";
+    private String email = "1231@#asd.com";
+    private String bio = " ";
+    private String image;
 }
