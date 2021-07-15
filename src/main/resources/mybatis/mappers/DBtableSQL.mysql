@@ -1,0 +1,16 @@
+-- auto-generated definition
+create table users
+(
+    id       varchar(255) not null
+        primary key,
+    username varchar(255) null,
+    password varchar(255) null,
+    email    varchar(255) null,
+    bio      text         null,
+    image    varchar(511) null,
+    constraint email
+        unique (email),
+    constraint username
+        unique (username)
+);
+

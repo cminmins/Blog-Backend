@@ -1,7 +1,7 @@
 package com.example.blog.repository.mybatis;
 
 import com.example.blog.domain.user.User;
-import com.example.blog.repository.repository.UserRegisterRepository;
+import com.example.blog.repository.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Import(MybatisUserRegisterRepository.class)
-class MybatisUserRegisterRepositoryTest extends MyBatisDBTest {
+@Import(MybatisUserRepository.class)
+class MybatisUserApiRepositoryTest extends MyBatisDBTest {
     @Autowired
-    private UserRegisterRepository userRegisterRepository;
+    private UserRepository userRepository;
 
     private User user;
 
@@ -24,8 +24,8 @@ class MybatisUserRegisterRepositoryTest extends MyBatisDBTest {
 
     @Test
     void save() {
-        userRegisterRepository.save(user);
-        Optional<User> userOptional = userRegisterRepository.findbyId("cminmins");
+        userRepository.save(user);
+        Optional<User> userOptional = userRepository.findbyEmail("cminmins");
         assertEquals(userOptional.get(), user);
     }
 

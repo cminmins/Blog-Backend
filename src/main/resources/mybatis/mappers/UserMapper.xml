@@ -12,6 +12,10 @@
         )
     </insert>
 
+    <select id="findByEmail" resultMap="user">
+        select id, username, email, password, bio, image from users where email = #{email}
+    </select>
+
     <resultMap id="user" type="com.example.blog.domain.user.User" >
         <id column="id" property="id"/>
         <result column="username" property="username"/>

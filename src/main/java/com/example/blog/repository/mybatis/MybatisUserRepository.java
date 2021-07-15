@@ -2,18 +2,18 @@ package com.example.blog.repository.mybatis;
 
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.mybatis.mapper.user.UserMapper;
-import com.example.blog.repository.repository.UserRegisterRepository;
+import com.example.blog.repository.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public class MybatisUserRegisterRepository implements UserRegisterRepository {
+public class MybatisUserRepository implements UserRepository {
     private final UserMapper userMapper;
 
     @Autowired
-    public MybatisUserRegisterRepository(UserMapper userMapper) {
+    public MybatisUserRepository(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
 
@@ -23,7 +23,7 @@ public class MybatisUserRegisterRepository implements UserRegisterRepository {
     }
 
     @Override
-    public Optional<User> findbyId(String id) {
-        return Optional.empty();
+    public Optional<User> findbyEmail(String email) {
+        return Optional.ofNullable(this.userMapper.findByEmail(email));
     }
 }

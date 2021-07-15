@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface UserRegisterRepository {
+public interface UserRepository {
     void save(User user);
-    Optional<User> findbyId(String id);
+
+    Optional<User> findbyEmail(String id);
 }

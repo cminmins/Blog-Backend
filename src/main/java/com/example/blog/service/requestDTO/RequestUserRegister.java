@@ -1,4 +1,4 @@
-package com.example.blog.service.requestBody;
+package com.example.blog.service.requestDTO;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.AllArgsConstructor;
