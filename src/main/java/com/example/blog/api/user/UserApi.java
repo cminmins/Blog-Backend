@@ -9,6 +9,7 @@ import com.example.blog.service.responseDTO.UserData;
 import com.example.blog.service.responseDTO.UserLoginData;
 import com.example.blog.service.user.UserLoginService;
 import com.example.blog.service.user.UserRegisterService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,14 @@ public class UserApi {
     private UserRepository userRepository;
     private UserRegisterService userRegisterService;
     private UserLoginService userLoginService;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public UserApi(UserRepository userRepository, UserRegisterService userRegisterService, UserLoginService userLoginService) {
+    public UserApi(UserRepository userRepository, UserRegisterService userRegisterService, UserLoginService userLoginService, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.userRegisterService = userRegisterService;
         this.userLoginService = userLoginService;
+        this.modelMapper = modelMapper;
     }
 
     private Map<String, Object> userResponse(UserData userData) {
@@ -50,7 +53,8 @@ public class UserApi {
         UserLoginData userLoginData = new UserLoginData(requestUserLogin.getEmail(), requestUserLogin.getPassword());
         User user = userLoginService.loginUser(userLoginData);
         if(user != null){
-            UserData userData = new UserData(user.getUsername(), user.getEmail(), user.getBio(), user.getImage());
+//            UserData userData = new UserData(user.getUsername(), user.getEmail(), user.getBio(), user.getImage());
+            UserData userData = modelMapper.map(user, UserData.class);
             return ResponseEntity.ok().body(userResponse(userData));
         }
         else{

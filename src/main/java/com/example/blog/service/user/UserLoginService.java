@@ -20,9 +20,11 @@ public class UserLoginService {
 
     public User loginUser(UserLoginData userLoginData) {
         User user = userRepository.findbyEmail(userLoginData.getEmail()).orElseThrow(InvalidAuthenticationException::new);
-        if(user.getPassword() != userLoginData.getPassword()) {
+        if (user.getPassword().equals(userLoginData.getPassword())) {
+            return user;
+        }
+        else{
             throw new InvalidAuthenticationException();
         }
-        return user;
     }
 }
