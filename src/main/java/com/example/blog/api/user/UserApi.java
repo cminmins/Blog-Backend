@@ -44,21 +44,14 @@ public class UserApi {
     @PostMapping("/users")
     public ResponseEntity createUser(@Valid @RequestBody RequestUserRegister requestUserRegister) {
         User user = userRegisterService.createUser(requestUserRegister);
-        UserData userData = new UserData(user.getUsername(), user.getEmail(), user.getBio(), user.getImage());
+        UserData userData = modelMapper.map(user, UserData.class);
         return ResponseEntity.status(201).body(userResponse(userData));
     }
 
     @PostMapping("/user/login")
     public ResponseEntity loginUser(@Valid @RequestBody RequestUserLogin requestUserLogin) {
-        UserLoginData userLoginData = new UserLoginData(requestUserLogin.getEmail(), requestUserLogin.getPassword());
-        User user = userLoginService.loginUser(userLoginData);
-        if(user != null){
-//            UserData userData = new UserData(user.getUsername(), user.getEmail(), user.getBio(), user.getImage());
-            UserData userData = modelMapper.map(user, UserData.class);
-            return ResponseEntity.ok().body(userResponse(userData));
-        }
-        else{
-            throw new InvalidAuthenticationException();
-        }
+        UserLoginData userLoginData = modelMapper.map(requestUserLogin, UserLoginData.class);
+        UserData userData = userLoginService.loginUser(userLoginData);
+        return ResponseEntity.ok().body(userResponse(userData));
     }
 }
