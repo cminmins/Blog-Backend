@@ -1,8 +1,10 @@
 package com.example.blog.service.user;
 
+import com.example.blog.api.user.UserDTOMapper;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.requestDTO.RequestUserRegister;
+import com.example.blog.service.responseDTO.UserData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,19 +14,16 @@ import javax.validation.Valid;
 @Service
 public class UserRegisterService {
     private UserRepository userRepository;
-    private String defaultImage;
+    private UserDTOMapper userDTOMapper;
 
-    @Autowired
-    public UserRegisterService(UserRepository userRepository,
-                               @Value("${default.image}") String defaultImage) {
+    public UserRegisterService(UserRepository userRepository, UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
-        this.defaultImage = defaultImage;
+        this.userDTOMapper = userDTOMapper;
     }
 
-
-    public User createUser(@Valid RequestUserRegister requestUserRegister) {
-        User user = new User(requestUserRegister.getEmail(), requestUserRegister.getUsername(), requestUserRegister.getPassword(), "", defaultImage);
+    public UserData createUser(@Valid RequestUserRegister requestUserRegister) {
+        User user = userDTOMapper.dtoToUser(requestUserRegister);
         userRepository.save(user);
-        return user;
+        return userDTOMapper.entityToUserData(user);
     }
 }

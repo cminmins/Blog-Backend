@@ -4,12 +4,12 @@ import com.example.blog.util.Util;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class User {
@@ -20,11 +20,7 @@ public class User {
     private String bio;
     private String image;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     public User(String email, String username, String password, String bio, String image) {
-//        this.id = id;
         this.id = UUID.randomUUID().toString();
         this.email = email;
         this.username = username;

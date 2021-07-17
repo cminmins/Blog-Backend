@@ -23,14 +23,12 @@ public class UserApi {
     private UserRepository userRepository;
     private UserRegisterService userRegisterService;
     private UserLoginService userLoginService;
-    private ModelMapper modelMapper;
 
     @Autowired
-    public UserApi(UserRepository userRepository, UserRegisterService userRegisterService, UserLoginService userLoginService, ModelMapper modelMapper) {
+    public UserApi(UserRepository userRepository, UserRegisterService userRegisterService, UserLoginService userLoginService) {
         this.userRepository = userRepository;
         this.userRegisterService = userRegisterService;
         this.userLoginService = userLoginService;
-        this.modelMapper = modelMapper;
     }
 
     private Map<String, Object> userResponse(UserData userData) {
@@ -43,15 +41,13 @@ public class UserApi {
 
     @PostMapping("/users")
     public ResponseEntity createUser(@Valid @RequestBody RequestUserRegister requestUserRegister) {
-        User user = userRegisterService.createUser(requestUserRegister);
-        UserData userData = modelMapper.map(user, UserData.class);
+        UserData userData = userRegisterService.createUser(requestUserRegister);
         return ResponseEntity.status(201).body(userResponse(userData));
     }
 
     @PostMapping("/user/login")
     public ResponseEntity loginUser(@Valid @RequestBody RequestUserLogin requestUserLogin) {
-        UserLoginData userLoginData = modelMapper.map(requestUserLogin, UserLoginData.class);
-        UserData userData = userLoginService.loginUser(userLoginData);
+        UserData userData = userLoginService.loginUser(requestUserLogin);
         return ResponseEntity.ok().body(userResponse(userData));
     }
 }

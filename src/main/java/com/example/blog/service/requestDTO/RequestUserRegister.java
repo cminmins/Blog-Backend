@@ -23,5 +23,4 @@ public class RequestUserRegister {
 
     @NotBlank(message = "Can't be empty")
     String password;
-
 }
