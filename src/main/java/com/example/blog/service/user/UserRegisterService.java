@@ -15,6 +15,8 @@ import javax.validation.Valid;
 public class UserRegisterService {
     private UserRepository userRepository;
     private UserDTOMapper userDTOMapper;
+    @Value("${default.image}")
+    private String image;
 
     public UserRegisterService(UserRepository userRepository, UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
@@ -23,6 +25,7 @@ public class UserRegisterService {
 
     public UserData createUser(@Valid RequestUserRegister requestUserRegister) {
         User user = userDTOMapper.dtoToUser(requestUserRegister);
+        user.setImage(image);
         userRepository.save(user);
         return userDTOMapper.entityToUserData(user);
     }
