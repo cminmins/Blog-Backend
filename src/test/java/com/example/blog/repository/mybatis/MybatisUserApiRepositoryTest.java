@@ -25,7 +25,7 @@ class MybatisUserApiRepositoryTest extends MyBatisDBTest {
     @Test
     void save() {
         userRepository.save(user);
-        Optional<User> userOptional = userRepository.findbyEmail("cminmins");
+        Optional<User> userOptional = userRepository.findByEmail("cminmins");
         assertEquals(userOptional.get(), user);
     }
 

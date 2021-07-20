@@ -16,6 +16,10 @@
         select id, username, email, password, bio, image from users where email = #{email}
     </select>
 
+    <select id="findById" resultMap="user">
+        select id, username, email, password, bio, image from users where id = #{id}
+    </select>
+
     <resultMap id="user" type="com.example.blog.domain.user.User" >
         <id column="id" property="id"/>
         <result column="username" property="username"/>

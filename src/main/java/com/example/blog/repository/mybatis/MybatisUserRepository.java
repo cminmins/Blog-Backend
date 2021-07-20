@@ -23,7 +23,12 @@ public class MybatisUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<User> findbyEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return Optional.ofNullable(this.userMapper.findByEmail(email));
+    }
+
+    @Override
+    public Optional<User> findById(String id) {
+        return Optional.ofNullable(this.userMapper.findById(id));
     }
 }

@@ -82,7 +82,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         getSubFromToken(token).ifPresent(id ->{
-            userRepository.findbyId(id).map(user -> {
+            userRepository.findById(id).map(user -> {
                 Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
                 return authentication;
 //                    //mapper      T          U

@@ -5,9 +5,7 @@ import com.example.blog.api.user.UserDTOMapper;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.requestDTO.RequestUserLogin;
-import com.example.blog.service.requestDTO.RequestUserRegister;
 import com.example.blog.service.responseDTO.UserData;
-import com.example.blog.service.responseDTO.UserLoginData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +23,7 @@ public class UserLoginService {
     }
 
     public UserData loginUser(@Valid RequestUserLogin requestUserLogin) {
-        User user = userRepository.findbyEmail(requestUserLogin.getEmail())
+        User user = userRepository.findByEmail(requestUserLogin.getEmail())
                 .orElseThrow(() -> new InvalidAuthenticationException());
         if (user.isNotMatchPassword(requestUserLogin.getPassword())) {
             throw new InvalidAuthenticationException();
