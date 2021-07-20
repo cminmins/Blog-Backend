@@ -1,8 +1,7 @@
 package com.example.blog.api.security;
 
-import com.example.blog.service.security.JwtService;
+import com.example.blog.service.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,17 +10,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.Filter;
 
-@Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public JwtFilter jwtFilter() {
-        return new JwtFilter();
+    private JwtFilter jwtFilter;
+
+    public SecurityConfiguration(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
     }
 
     private static final String[] PERMIT_GET_URI = {
@@ -35,15 +33,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/user/login"
     };
 
-    private static final String[] AUTH_GET_URI = {
-            "/articles/feed"
-    };
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        Filter filter = new JwtFilter();
         http
                 .csrf()
                     .disable()
@@ -61,10 +52,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .permitAll()
                     .antMatchers(HttpMethod.OPTIONS)
                         .permitAll()
-                    .antMatchers(HttpMethod.GET, AUTH_GET_URI)
-                        .authenticated()
                     .anyRequest()
                         .authenticated();
-        http.addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

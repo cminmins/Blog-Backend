@@ -1,27 +1,39 @@
 package com.example.blog.service.security;
 
+import com.example.blog.api.exception.InvalidAuthTokenException;
 import com.example.blog.domain.user.User;
+import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.responseDTO.UserData;
 import com.example.blog.util.Util;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
+import java.util.function.Function;
 
 @Slf4j
 @Component
-public class JwtService {
+public class JwtTokenProvider {
     private String key;
     private int sessionTime;
+    private UserRepository userRepository;
 
-    public JwtService(@Value("${jwt.secret}") String key,
-                      @Value("${jwt.sessionTime}") int sessionTime) {
+    @Autowired
+    public JwtTokenProvider(@Value("${jwt.secret}") String key,
+                            @Value("${jwt.sessionTime}") int sessionTime,
+                            UserRepository userRepository) {
         this.key = key;
         this.sessionTime = sessionTime;
+        this.userRepository = userRepository;
     }
 
     public String buildToken(UserData user) {
@@ -33,20 +45,21 @@ public class JwtService {
                 .compact();
     }
 
-    public Claims getClaimsFromToken(String token) {
+    public Optional<String> getSubFromToken(String token) {
         try{
-            Claims claims = Jwts.parser()
+            String user_id = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token)
-                    .getBody();
-            return claims;
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
+                    .getBody()
+                    .getSubject();
+            return Optional.ofNullable(user_id);
+        } catch (Exception e) {
+            return Optional.empty();
         }
     }
 
     public boolean isVaildToken(String token) {
-        if (!Util.isEmpty(token)) {
+        if (StringUtils.hasText(token)) {
             try {
                 Jwts.parser()
                         .setSigningKey(key)
@@ -65,6 +78,24 @@ public class JwtService {
             }
         }
         return false;
+    }
+
+    public Authentication getAuthentication(String token) {
+        getSubFromToken(token).ifPresent(id ->{
+            userRepository.findbyId(id).map(user -> {
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                return authentication;
+//                    //mapper      T          U
+//                    new Function<User, Authentication>() {
+//
+//                        @Override                     value
+//                        public Authentication apply(User user) {
+//                            return new UsernamePasswordAuthenticationToken(user, null);
+//                        }
+//                    }
+            });
+        });
+        return null;
     }
 
     public Date expireTimeFromNow() {

@@ -1,17 +1,7 @@
 package com.example.blog.api.security;
 
-import com.example.blog.api.exception.InvalidAuthTokenException;
-import com.example.blog.api.exception.InvalidAuthenticationException;
-import com.example.blog.domain.user.User;
-import com.example.blog.repository.repository.UserRepository;
-import com.example.blog.service.security.JwtService;
-import com.example.blog.util.Util;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.example.blog.service.security.JwtTokenProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,15 +13,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class JwtFilter extends OncePerRequestFilter {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Token ";
 
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = parseTokenString(request);
-        if (StringUtils.hasText(token)) {
-            Authentication authentication = new UsernamePasswordAuthenticationToken(token, null);
+        if (StringUtils.hasText(token) && jwtTokenProvider.isVaildToken(token)){
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
         }
