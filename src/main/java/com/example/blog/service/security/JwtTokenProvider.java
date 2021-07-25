@@ -9,6 +9,10 @@ import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -38,15 +42,15 @@ public class JwtTokenProvider {
 
     public String buildToken(UserData user) {
         return Jwts.builder()
-                .setIssuer("sungmin.com")
+//                .setIssuer("sungmin.com")
                 .setSubject(user.getId())
-                .signWith(SignatureAlgorithm.HS256, key)
                 .setExpiration(expireTimeFromNow())
+                .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
     }
 
     public Optional<String> getSubFromToken(String token) {
-        try{
+        try {
             String user_id = Jwts.parser()
                     .setSigningKey(key)
                     .parseClaimsJws(token)
@@ -80,22 +84,9 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Authentication getAuthentication(String token) {
-        getSubFromToken(token).ifPresent(id ->{
-            userRepository.findById(id).map(user -> {
-                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
-                return authentication;
-//                    //mapper      T          U
-//                    new Function<User, Authentication>() {
-//
-//                        @Override                     value
-//                        public Authentication apply(User user) {
-//                            return new UsernamePasswordAuthenticationToken(user, null);
-//                        }
-//                    }
-            });
-        });
-        return null;
+    public Authentication getAuthentication(String id) {
+        return userRepository.findById(id)
+                .map(user -> new UsernamePasswordAuthenticationToken(user.getId(), null, Collections.emptyList())).orElseGet(null);
     }
 
     public Date expireTimeFromNow() {

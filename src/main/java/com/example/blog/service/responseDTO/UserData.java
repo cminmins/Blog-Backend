@@ -7,13 +7,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Setter
 public class UserData {
     private String id;
-    private String username = "";
-    private String email =  "";
-    private String bio = "";
-    private String image = "";
+    private String username;
+    private String email;
+    private String bio;
+    private String image;
 }

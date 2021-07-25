@@ -19,9 +19,8 @@ repositories {
 }
 
 dependencies {
-	// 지금단계에선 불필요
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-
+	// security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -55,6 +54,14 @@ dependencies {
 
 	// Mysql DB 연결
 	implementation 'mysql:mysql-connector-java'
+
+	// jwt for Security
+
+	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+			//'org.bouncycastle:bcprov-jdk15on:1.60',
+			'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 
 	// Test
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.0'

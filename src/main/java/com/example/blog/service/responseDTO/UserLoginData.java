@@ -1,14 +1,13 @@
 package com.example.blog.service.responseDTO;
 
 import com.example.blog.domain.user.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Data
-@NoArgsConstructor
+@Getter
+@Setter
 public class UserLoginData {
     private String email;
     private String password;

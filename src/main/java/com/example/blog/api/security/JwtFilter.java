@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -26,20 +27,22 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = parseTokenString(request);
-        if (StringUtils.hasText(token) && jwtTokenProvider.isVaildToken(token)){
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext()
-                .setAuthentication(authentication);
-        }
+        parseTokenString(request).ifPresent(token -> {
+            jwtTokenProvider.getSubFromToken(token).ifPresent(id -> {
+                Authentication authentication = jwtTokenProvider.getAuthentication(id);
+                SecurityContextHolder.getContext()
+                        .setAuthentication(authentication);
+            });
+        });
+
         filterChain.doFilter(request, response);
     }
 
-    public String parseTokenString(HttpServletRequest request) {
+    public Optional<String> parseTokenString(HttpServletRequest request) {
         String token = request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(token) && token.startsWith(TOKEN_PREFIX)){
-            return token.substring(TOKEN_PREFIX.length());
+        if (StringUtils.hasText(token) && token.startsWith(TOKEN_PREFIX)) {
+            return Optional.ofNullable(token.substring(TOKEN_PREFIX.length()));
         }
-        return null;
+        return Optional.empty();
     }
 }
