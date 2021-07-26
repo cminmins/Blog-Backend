@@ -8,17 +8,15 @@
     <delete id="unfollow">
         delete
         from follows
-        where user_id = ${currentUser}, follow_id = #{unfollowUser}) ;
+        where user_id = #{currentUser}, follow_id = #{unfollowUser}) ;
     </delete>
 
-    <select id="isFollowing" resultMap="java.lang.Boolean">
-        select
-           case when exists(
-                   select *
-                   from follows
-                   where user_id = ${currentUser}, follow_id = #{followUser})
-            then 'TRUE'
-            else 'FALSE'
-        end
+    <select id="isFollowing" resultType="java.lang.Boolean">
+        select case
+                   when exists(
+                           select *
+                           from follows
+                           where user_id = #{currentUser} and follow_id = #{followUser})
+                   then 1 else 0 end;
     </select>
 </mapper>

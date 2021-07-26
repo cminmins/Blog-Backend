@@ -11,6 +11,6 @@ public interface FollowMapper {
     void unfollow(@Param("currentUser") String currentUser,
                   @Param("unfollowUser") String unfollowUser);
 
-    boolean isFollowing(@Param("curruentUser") String currentUser,
+    boolean isFollowing(@Param("currentUser") String currentUser,
                        @Param("followUser") String followUser);
 }
