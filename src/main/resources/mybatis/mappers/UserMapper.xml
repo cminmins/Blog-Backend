@@ -12,12 +12,31 @@
         )
     </insert>
 
+    <update id="update">
+        update users
+        set username    = #{user.username},
+            email    = #{user.email},
+            password = #{user.password},
+            bio      = #{user.bio},
+            image    = #{user.image}
+        where id = #{user.id};
+    </update>
+
+    <insert id="follow">
+        insert into follows value()
+
+    </insert>
+
     <select id="findByEmail" resultMap="user">
         select id, username, email, password, bio, image from users where email = #{email}
     </select>
 
     <select id="findById" resultMap="user">
         select id, username, email, password, bio, image from users where id = #{id}
+    </select>
+
+    <select id="findByUsername" resultMap="user">
+        select id, username, email, password, bio, image from users where username = #{username}
     </select>
 
     <resultMap id="user" type="com.example.blog.domain.user.User" >

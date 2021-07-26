@@ -1,4 +1,4 @@
-package com.example.blog.repository.mybatis;
+package com.example.blog.repository.mybatis.mapper.user;
 
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.mybatis.mapper.user.UserMapper;

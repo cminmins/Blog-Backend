@@ -5,6 +5,7 @@ import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.responseDTO.UserData;
 import com.example.blog.util.Util;
+import com.mysql.cj.jdbc.Blob;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class JwtTokenProvider {
     private String key;
     private int sessionTime;
     private UserRepository userRepository;
+    private static final String TOKEN_PREFIX = "Token ";
 
     @Autowired
     public JwtTokenProvider(@Value("${jwt.secret}") String key,
@@ -82,6 +84,10 @@ public class JwtTokenProvider {
             }
         }
         return false;
+    }
+
+    public String getTokenFromHeader(String authorization) {
+        return authorization.substring(TOKEN_PREFIX.length());
     }
 
     public Authentication getAuthentication(String id) {

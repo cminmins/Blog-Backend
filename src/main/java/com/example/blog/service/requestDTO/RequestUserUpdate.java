@@ -1,22 +1,18 @@
 package com.example.blog.service.requestDTO;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @JsonRootName("user")
-public class RequestUserLogin {
-
-    @Email
-    @NotBlank(message = "can't be empty")
+public class RequestUserUpdate {
+    @Email(message = "should be an email")
     private String email;
-
-    @NotBlank(message = "can't be empty")
+    private String username;
     private String password;
+    private String bio;
+    private String image;
 }

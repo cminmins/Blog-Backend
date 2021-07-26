@@ -4,12 +4,14 @@ import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.requestDTO.RequestUserLogin;
 import com.example.blog.service.requestDTO.RequestUserRegister;
+import com.example.blog.service.requestDTO.RequestUserUpdate;
 import com.example.blog.service.responseDTO.UserData;
 import com.example.blog.service.responseDTO.UserDataWithToken;
 import com.example.blog.service.security.JwtTokenProvider;
 import com.example.blog.service.user.UserCurrentService;
 import com.example.blog.service.user.UserLoginService;
 import com.example.blog.service.user.UserRegisterService;
+import com.example.blog.service.user.UserUpdateService;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,17 +23,17 @@ import java.util.Map;
 
 @RestController
 public class UserApi {
-    private UserRepository userRepository;
     private UserRegisterService userRegisterService;
     private UserLoginService userLoginService;
     private UserCurrentService userCurrentService;
+    private UserUpdateService userUpdateService;
     private JwtTokenProvider jwtTokenProvider;
 
-    public UserApi(UserRepository userRepository, UserRegisterService userRegisterService, UserLoginService userLoginService, UserCurrentService userCurrentService, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
+    public UserApi(UserRegisterService userRegisterService, UserLoginService userLoginService, UserCurrentService userCurrentService, UserUpdateService userUpdateService, JwtTokenProvider jwtTokenProvider) {
         this.userRegisterService = userRegisterService;
         this.userLoginService = userLoginService;
         this.userCurrentService = userCurrentService;
+        this.userUpdateService = userUpdateService;
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
@@ -43,23 +45,31 @@ public class UserApi {
         };
     }
 
-    @PostMapping(value = "/api/users")
+    @PostMapping(value = "/users")
     public ResponseEntity createUser(@Valid @RequestBody RequestUserRegister requestUserRegister) {
         UserData userData = userRegisterService.createUser(requestUserRegister);
         return ResponseEntity.status(201)
                 .body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.buildToken(userData))));
     }
 
-    @PostMapping("/api/users/login")
+    @PostMapping("/users/login")
     public ResponseEntity loginUser(@Valid @RequestBody RequestUserLogin requestUserLogin) {
         UserData userData = userLoginService.loginUser(requestUserLogin);
         return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.buildToken(userData))));
     }
 
-    @GetMapping("/api/user")
+    @GetMapping("/user")
     public ResponseEntity currentUser(@AuthenticationPrincipal String id,
-                                      @RequestHeader(value = "Authorization") String authorization) {
+                                      @RequestHeader(value = "Authorization", required = false) String authorization) {
         UserData userData = userCurrentService.getCurrentUser(id);
-        return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.buildToken(userData))));
+        return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.getTokenFromHeader(authorization))));
+    }
+
+    @PutMapping("/user")
+    public ResponseEntity updateUser(@AuthenticationPrincipal String id,
+                                     @RequestHeader(value = "Authorization", required = false) String authorization,
+                                     @Valid @RequestBody RequestUserUpdate requestUserUpdate) {
+        UserData userData = userUpdateService.updateUser(id, requestUserUpdate);
+        return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.getTokenFromHeader(authorization))));
     }
 }

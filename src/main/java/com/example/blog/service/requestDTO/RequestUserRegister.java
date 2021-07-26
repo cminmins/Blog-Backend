@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 @JsonRootName("user")
 public class RequestUserRegister {
 
-    @NotBlank(message = "Can't be empty")
+    @NotBlank(message = "can't be empty")
     String username;
 
     @Email(message = "should be an email")
-    @NotBlank(message = "Can't be empty")
+    @NotBlank(message = "can't be empty")
     String email;
 
-    @NotBlank(message = "Can't be empty")
+    @NotBlank(message = "can't be empty")
     String password;
 }

@@ -18,8 +18,8 @@ public class UserCurrentService {
     }
 
     public UserData getCurrentUser(String id) {
-        User user = userRepository.findById(id)
-                .orElse(new User());
-        return userDTOMapper.entityToUserData(user);
+        return userRepository.findById(id)
+                .map(user -> userDTOMapper.entityToUserData(user))
+                .orElseGet(null);
     }
 }
