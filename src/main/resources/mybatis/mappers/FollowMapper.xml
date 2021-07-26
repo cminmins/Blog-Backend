@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.repository.mybatis.mapper.follow.FollowMapper">
+    <insert id="follow">
+        insert into follows (user_id, follow_id) value (#{currentUser}, #{followUser});
+    </insert>
+
+    <delete id="unfollow">
+        delete
+        from follows
+        where user_id = ${currentUser}, follow_id = #{unfollowUser}) ;
+    </delete>
+
+    <select id="isFollowing" resultMap="java.lang.Boolean">
+        select
+           case when exists(
+                   select *
+                   from follows
+                   where user_id = ${currentUser}, follow_id = #{followUser})
+            then 'TRUE'
+            else 'FALSE'
+        end
+    </select>
+</mapper>
