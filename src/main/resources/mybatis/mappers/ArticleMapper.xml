@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.blog.repository.mybatis.mapper.article.ArticleMapper">
+    <insert id="createArticle">
+        insert
+        articles (articleId, authorId, slug, title, description, body, createdAt, updatedAt)
+            value (
+        #{article.id},
+        #{article.authorId},
+        #{article.slug},
+        #{article.title},
+        #{article.description},
+        #{article.body},
+        #{article.createdAt},
+        #{article.updatedAt}
+        )
+    </insert>
+
+    <select id="findBySlug" resultMap="article">
+        select authorId,
+               articleId,
+               slug,
+               title,
+               description,
+               body,
+               createdAt,
+               updatedAt
+        from articles
+        where slug = #{slug};
+    </select>
+
+    <select id="isFollowingArticle" resultType="java.lang.Boolean">
+        select case
+                   when exists(
+                           select *
+                           from articlefavorites
+                           where userId = #{userId} and articleId = #{articleId})
+                       then 1
+                   else 0 end;
+
+    </select>
+
+    <select id="countArticleFavorites" resultType="java.lang.Integer">
+        select count(*)
+        from articlefavorites
+        where articleId = #{articleId};
+    </select>
+
+    <select id="findTagList" resultType="ArrayList">
+        select tags.name
+        from article_tag left join tags on article_tag.tagId = tags.tagId
+        where articleId = #{articleId}
+    </select>
+
+    <resultMap id="article" type="com.example.blog.domain.article.Article">
+        <result property="authorId" column="authorId"/>
+        <result property="id" column="articleId"/>
+        <result property="slug" column="slug"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="body" column="body"/>
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+    </resultMap>
+</mapper>
