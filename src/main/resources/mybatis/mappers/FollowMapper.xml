@@ -8,7 +8,7 @@
     <delete id="unfollow">
         delete
         from follows
-        where user_id = #{currentUser}, follow_id = #{unfollowUser}) ;
+        where user_id = #{currentUser} and follow_id = #{unfollowUser} ;
     </delete>
 
     <select id="isFollowing" resultType="java.lang.Boolean">

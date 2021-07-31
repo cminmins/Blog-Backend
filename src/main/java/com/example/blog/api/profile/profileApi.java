@@ -1,7 +1,7 @@
 package com.example.blog.api.profile;
 
-import com.example.blog.repository.repository.UserRepository;
-import com.example.blog.service.profile.followUserService;
+import com.example.blog.domain.user.User;
+import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,9 +12,9 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/profiles/{username}")
 public class profileApi {
-    private followUserService followUserService;
+    private FollowUserService followUserService;
 
-    public profileApi(com.example.blog.service.profile.followUserService followUserService) {
+    public profileApi(com.example.blog.service.profile.FollowUserService followUserService) {
         this.followUserService = followUserService;
     }
 
@@ -25,23 +25,23 @@ public class profileApi {
     }
 
     @GetMapping
-    public ResponseEntity getProfile(@AuthenticationPrincipal String id,
+    public ResponseEntity getProfile(@AuthenticationPrincipal User user,
                                      @PathVariable("username") String username) {
-        ProfileData profileData = followUserService.getProfile(id, username);
+        ProfileData profileData = followUserService.getProfile(user.getId(), username);
         return ResponseEntity.ok().body(profileResponse(profileData));
     }
 
     @PostMapping("/follow")
-    public ResponseEntity followUser(@AuthenticationPrincipal String id,
+    public ResponseEntity followUser(@AuthenticationPrincipal User user,
                                      @PathVariable("username") String username) {
-        ProfileData profileData = followUserService.followUser(id, username);
+        ProfileData profileData = followUserService.followUser(user.getId(), username);
         return ResponseEntity.status(201).body(profileResponse(profileData));
     }
 
     @DeleteMapping("/follow")
-    public ResponseEntity unfollowUser(@AuthenticationPrincipal String id,
+    public ResponseEntity unfollowUser(@AuthenticationPrincipal User user,
                                        @PathVariable("username") String username) {
-        ProfileData profileData = followUserService.unfollowUser(id, username);
+        ProfileData profileData = followUserService.unfollowUser(user.getId(), username);
         return ResponseEntity.ok().body(profileResponse(profileData));
     }
 }

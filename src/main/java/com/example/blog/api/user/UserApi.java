@@ -59,17 +59,17 @@ public class UserApi {
     }
 
     @GetMapping("/user")
-    public ResponseEntity currentUser(@AuthenticationPrincipal String id,
+    public ResponseEntity currentUser(@AuthenticationPrincipal User user,
                                       @RequestHeader(value = "Authorization", required = false) String authorization) {
-        UserData userData = userCurrentService.getCurrentUser(id);
+        UserData userData = userCurrentService.getCurrentUser(user.getId());
         return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.getTokenFromHeader(authorization))));
     }
 
     @PutMapping("/user")
-    public ResponseEntity updateUser(@AuthenticationPrincipal String id,
+    public ResponseEntity updateUser(@AuthenticationPrincipal User user,
                                      @RequestHeader(value = "Authorization", required = false) String authorization,
                                      @Valid @RequestBody RequestUserUpdate requestUserUpdate) {
-        UserData userData = userUpdateService.updateUser(id, requestUserUpdate);
+        UserData userData = userUpdateService.updateUser(user.getId(), requestUserUpdate);
         return ResponseEntity.ok().body(userResponse(new UserDataWithToken(userData, jwtTokenProvider.getTokenFromHeader(authorization))));
     }
 }

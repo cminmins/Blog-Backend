@@ -1,6 +1,7 @@
 package com.example.blog.repository.mybatis;
 
 import com.example.blog.domain.user.User;
+import com.example.blog.repository.mybatis.mapper.user.MybatisUserRepository;
 import com.example.blog.repository.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

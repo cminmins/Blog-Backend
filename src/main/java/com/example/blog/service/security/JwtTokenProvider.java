@@ -92,7 +92,7 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String id) {
         return userRepository.findById(id)
-                .map(user -> new UsernamePasswordAuthenticationToken(user.getId(), null, Collections.emptyList())).orElseGet(null);
+                .map(user -> new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList())).orElseGet(null);
     }
 
     public Date expireTimeFromNow() {
