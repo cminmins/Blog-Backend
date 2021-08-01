@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -15,7 +16,7 @@ public class ArticleData {
     String title;
     String description;
     String body;
-    ArrayList<String> tagList;
+    List<String> tagList;
     String createdAt;
     String updatedAt;
 

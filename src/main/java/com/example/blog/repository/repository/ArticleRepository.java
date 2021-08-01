@@ -1,9 +1,10 @@
 package com.example.blog.repository.repository;
 
 import com.example.blog.domain.article.Article;
+import com.example.blog.domain.article.Tag;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,5 +17,9 @@ public interface ArticleRepository {
 
     int countArticleFavorites(String articleId);
 
-    Optional<ArrayList<String>> findTagList(String articleId);
+    Optional<List<String>> findTagList(String articleId);
+
+    Optional<String> findByTag(String name);
+    void saveTag(Tag tag);
+    void saveArticleTag(String articleId, String tagId);
 }

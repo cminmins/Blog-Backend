@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.example.blog.repository.mybatis.mapper.article.ArticleMapper">
     <insert id="createArticle">
-        insert
+        insert into
         articles (articleId, authorId, slug, title, description, body, createdAt, updatedAt)
             value (
         #{article.id},
@@ -34,7 +34,8 @@
                    when exists(
                            select *
                            from articlefavorites
-                           where userId = #{userId} and articleId = #{articleId})
+                           where userId = #{userId}
+                             and articleId = #{articleId})
                        then 1
                    else 0 end;
 
@@ -46,11 +47,35 @@
         where articleId = #{articleId};
     </select>
 
-    <select id="findTagList" resultType="ArrayList">
+    <select id="findTagList" resultType="String">
         select tags.name
-        from article_tag left join tags on article_tag.tagId = tags.tagId
+        from article_tag
+                 left join tags on article_tag.tagId = tags.tagId
         where articleId = #{articleId}
     </select>
+
+    <select id="findByTag" resultType="String">
+        select tagId
+        from tags
+        where name = #{name};
+    </select>
+
+    <insert id="saveTag" keyProperty="tagId">
+        insert into tags (tagId, name)
+        value (
+        #{tag.id},
+        #{tag.name}
+        )
+    </insert>
+
+    <insert id="saveArticleTag">
+        insert into
+        article_tag (articleId, tagId)
+        value (
+        #{articleId},
+        #{tagId}
+        )
+    </insert>
 
     <resultMap id="article" type="com.example.blog.domain.article.Article">
         <result property="authorId" column="authorId"/>

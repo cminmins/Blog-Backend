@@ -4,6 +4,7 @@ import com.example.blog.api.article.ArticleDTOMapper;
 import com.example.blog.domain.article.Article;
 import com.example.blog.domain.article.Article_favorited;
 import com.example.blog.domain.article.Author;
+import com.example.blog.domain.article.Tag;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.ArticleRepository;
 import com.example.blog.repository.repository.FollowRepository;
@@ -45,6 +46,13 @@ public class ArticleService {
                 requestCreateArticles.getBody(),
                 requestCreateArticles.getTagList());
         articleRepository.createArticle(article);
+        for (String tagName : article.getTagList()) {
+            String tagId = articleRepository.findByTag(tagName)
+                    .orElseGet(() -> {
+                        articleRepository.saveTag(new Tag(tagName));
+                        return articleRepository.findByTag(tagName).get();
+                    });
+            articleRepository.saveArticleTag(article.getId(), tagId); }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
         articleData.setAuthor(getAuthor(user, user.getId()));
         return articleData;
@@ -57,7 +65,8 @@ public class ArticleService {
         }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
         articleData.setAuthor(getAuthor(user, article.getAuthorId()));
-        articleRepository.findTagList(article.getId()).ifPresent(taglist -> articleData.setTagList(taglist));
+        articleRepository.findTagList(article.getId())
+                .ifPresent(tagList -> articleData.setTagList(tagList));
         articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
         articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
         return articleData;

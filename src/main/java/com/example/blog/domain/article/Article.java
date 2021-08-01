@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -27,9 +28,9 @@ public class Article {
     private String createdAt;
     private String updatedAt;
 
-    ArrayList<String> tagList;
+    List<String> tagList;
 
-    public Article(String authorId, String title, String description, String body, ArrayList<String> tagList) {
+    public Article(String authorId, String title, String description, String body, List<String> tagList) {
         this.authorId = authorId;
         this.id = UUID.randomUUID().toString();
         this.slug = toSlug(title);
@@ -41,7 +42,7 @@ public class Article {
         this.tagList = tagList;
     }
 
-    public void update(String title, String description, String body, ArrayList<String> tagList) {
+    public void update(String title, String description, String body, List<String> tagList) {
         if (StringUtils.hasText(title)) {
             this.updatedAt = makeTimeFromNow();
             this.slug = toSlug(title);
@@ -67,5 +68,4 @@ public class Article {
     public String makeTimeFromNow() {
         return LocalDateTime.now().toString();
     }
-
 }
