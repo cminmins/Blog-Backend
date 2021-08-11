@@ -33,7 +33,7 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 	// javax.xml.bind 관련 Error 해결
-	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.0'
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
 	// AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -64,9 +64,13 @@ dependencies {
 			'io.jsonwebtoken:jjwt-jackson:0.11.2' // or 'io.jsonwebtoken:jjwt-gson:0.11.2' for gson
 
 	// Test
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.2.0'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:2.5.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+
+	testImplementation "org.testcontainers:testcontainers:1.15.3"
+	testImplementation "org.testcontainers:junit-jupiter:1.15.3"
+	testImplementation "org.testcontainers:mysql:1.15.3"
 }
 
 test {

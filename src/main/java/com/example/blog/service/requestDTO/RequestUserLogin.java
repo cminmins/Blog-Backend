@@ -10,6 +10,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonRootName("user")
 public class RequestUserLogin {
 

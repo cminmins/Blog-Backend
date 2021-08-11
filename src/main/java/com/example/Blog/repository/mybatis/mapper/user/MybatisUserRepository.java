@@ -1,9 +1,7 @@
 package com.example.blog.repository.mybatis.mapper.user;
 
 import com.example.blog.domain.user.User;
-import com.example.blog.repository.mybatis.mapper.user.UserMapper;
 import com.example.blog.repository.repository.UserRepository;
-import com.example.blog.service.requestDTO.RequestUserUpdate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
