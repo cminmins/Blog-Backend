@@ -4,6 +4,7 @@ import com.example.blog.domain.user.User;
 import com.example.blog.service.articles.ArticleService;
 import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.requestDTO.RequestCreateArticles;
+import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +47,12 @@ public class ArticleApi {
                                      @PathVariable("slug") String slug) {
         ArticleData articleData = articleService.getArticle(user, slug);
         return ResponseEntity.ok().body(SingleArticleResponse(articleData));
+    }
+
+    @PutMapping("/{slug}")
+    public ResponseEntity updateArticle(@AuthenticationPrincipal User user,
+                                        @PathVariable("slug") String slug,
+                                        @Valid @RequestBody RequestUpdateArticle requestUpdateArticle) {
+        ArticleData articleData = articleService.updateArticle(user, slug, requestUpdateArticle);
     }
 }

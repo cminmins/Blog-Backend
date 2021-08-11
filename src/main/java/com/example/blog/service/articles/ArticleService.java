@@ -10,6 +10,7 @@ import com.example.blog.repository.repository.ArticleRepository;
 import com.example.blog.repository.repository.FollowRepository;
 import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.requestDTO.RequestCreateArticles;
+import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.stereotype.Service;
@@ -70,5 +71,12 @@ public class ArticleService {
         articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
         articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
         return articleData;
+    }
+
+    public ArticleData updateArticle(User user, String slug, RequestUpdateArticle requestUpdateArticle) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return null;
+        }
     }
 }
