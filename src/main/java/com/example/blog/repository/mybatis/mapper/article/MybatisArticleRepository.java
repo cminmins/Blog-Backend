@@ -23,6 +23,11 @@ public class MybatisArticleRepository implements ArticleRepository {
     }
 
     @Override
+    public void updateArticle(String id, Article article) {
+        articleMapper.updateArticle(id, article);
+    }
+
+    @Override
     public Optional<Article> findBySlug(String slug) {
         return Optional.ofNullable(articleMapper.findBySlug(slug));
     }

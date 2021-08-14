@@ -50,9 +50,9 @@ public class ArticleApi {
     }
 
     @PutMapping("/{slug}")
-    public ResponseEntity updateArticle(@AuthenticationPrincipal User user,
-                                        @PathVariable("slug") String slug,
+    public ResponseEntity updateArticle(@PathVariable("slug") String slug,
                                         @Valid @RequestBody RequestUpdateArticle requestUpdateArticle) {
-        ArticleData articleData = articleService.updateArticle(user, slug, requestUpdateArticle);
+        ArticleData articleData = articleService.updateArticle(slug, requestUpdateArticle);
+        return ResponseEntity.ok().body(SingleArticleResponse(articleData));
     }
 }

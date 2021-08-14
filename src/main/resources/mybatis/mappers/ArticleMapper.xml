@@ -16,6 +16,15 @@
         )
     </insert>
 
+    <update id="updateArticle">
+        update articles
+        set articles.title       = #{article.title},
+            articles.slug        = #{article.slug},
+            articles.description = #{article.description},
+            articles.body        = #{article.body}
+        where articles.id = #{id};
+    </update>
+
     <select id="findBySlug" resultMap="article">
         select authorId,
                articleId,

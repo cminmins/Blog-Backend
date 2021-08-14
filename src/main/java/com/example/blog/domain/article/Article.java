@@ -42,7 +42,7 @@ public class Article {
         this.tagList = tagList;
     }
 
-    public void update(String title, String description, String body, List<String> tagList) {
+    public void update(String title, String description, String body) {
         if (StringUtils.hasText(title)) {
             this.updatedAt = makeTimeFromNow();
             this.slug = toSlug(title);
@@ -55,9 +55,6 @@ public class Article {
         if (StringUtils.hasText(body)) {
             this.updatedAt = makeTimeFromNow();
             this.body = body;
-        }
-        if (!tagList.isEmpty()) {
-            this.tagList = tagList;
         }
     }
 

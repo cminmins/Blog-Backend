@@ -27,4 +27,6 @@ public interface ArticleMapper {
     int countArticleFavorites(@Param("articleId") String articleId);
 
     List<String> findTagList(@Param("articleId") String articleId);
+
+    void updateArticle(@Param("id") String id, @Param("article") Article article);
 }

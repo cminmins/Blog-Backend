@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface ArticleRepository {
 
     void createArticle(Article article);
+
+    void updateArticle(String id, Article article);
     Optional<Article> findBySlug(String slug);
 
     boolean isFollowingArticle(String userId, String articleId);

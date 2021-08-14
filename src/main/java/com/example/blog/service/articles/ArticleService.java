@@ -73,10 +73,13 @@ public class ArticleService {
         return articleData;
     }
 
-    public ArticleData updateArticle(User user, String slug, RequestUpdateArticle requestUpdateArticle) {
+    public ArticleData updateArticle(String slug, RequestUpdateArticle requestUpdateArticle) {
         Article article = articleRepository.findBySlug(slug).orElse(null);
         if (article == null) {
             return null;
         }
+        article.update(requestUpdateArticle.getTitle(), requestUpdateArticle.getDescription(), requestUpdateArticle.getBody());
+        articleRepository.updateArticle(article.getId(), article);
+        return articleDTOMapper.entityToDTO(article);
     }
 }
