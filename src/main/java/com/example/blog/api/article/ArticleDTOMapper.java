@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface ArticleDTOMapper {
-
     @Mapping(target = "favorited", constant = "false")
     @Mapping(target = "favoritesCount", constant = "0")
     @Mapping(target = "author", expression = "java(null)")

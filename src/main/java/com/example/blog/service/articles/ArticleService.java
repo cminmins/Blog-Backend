@@ -12,11 +12,13 @@ import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.requestDTO.RequestCreateArticles;
 import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
+import com.example.blog.service.responseDTO.ArticleList;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -29,15 +31,6 @@ public class ArticleService {
         this.articleRepository = articleRepository;
         this.articleDTOMapper = articleDTOMapper;
         this.followUserService = followUserService;
-    }
-
-    public Map<String, Object> getAuthor(User user, String targetId) {
-        ProfileData profileData = followUserService.getProfileById(user.getId(), targetId);
-        return new HashMap<String, Object>() {
-            {
-                put("author", profileData);
-            }
-        };
     }
 
     public ArticleData createArticle(User user, RequestCreateArticles requestCreateArticles) {
@@ -55,7 +48,7 @@ public class ArticleService {
                     });
             articleRepository.saveArticleTag(article.getId(), tagId); }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-        articleData.setAuthor(getAuthor(user, user.getId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
         return articleData;
     }
 
@@ -65,7 +58,7 @@ public class ArticleService {
             return null;
         }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-        articleData.setAuthor(getAuthor(user, article.getAuthorId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
         articleRepository.findTagList(article.getId())
                 .ifPresent(tagList -> articleData.setTagList(tagList));
         articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
@@ -81,5 +74,54 @@ public class ArticleService {
         article.update(requestUpdateArticle.getTitle(), requestUpdateArticle.getDescription(), requestUpdateArticle.getBody());
         articleRepository.updateArticle(article.getId(), article);
         return articleDTOMapper.entityToDTO(article);
+    }
+
+    public void deleteArticle(String slug) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return;
+        }
+        articleRepository.deleteArticle(slug);
+        return;
+    }
+
+    public ArticleList listArticle(String tag, String favorited, String author, int offset, int limit, User user) {
+        List<String> articleList = articleRepository.findByQuery(tag, favorited, author, offset, limit).orElse(null);
+        if (articleList == null) {
+            return null;
+        }
+        List<ArticleData> articleDataList = new ArrayList<>();
+        for (String articleId : articleList) {
+            articleRepository.findById(articleId).ifPresent(
+                    article -> {
+                        ArticleData articleData = articleDTOMapper.entityToDTO(article);
+                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+                        articleRepository.findTagList(article.getId()).ifPresent(tagList -> articleData.setTagList(tagList));
+                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
+                        articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
+                        articleDataList.add(articleData);
+                    });
+        }
+            return new ArticleList(articleDataList, articleDataList.size());
+    }
+
+    public ArticleList getFeedArticles(User user, int limit, int offset) {
+        List<String> follows_id = articleRepository.getUserFeed(user.getId(), limit, offset).orElse(null);
+        if (follows_id == null) {
+            return null;
+        }
+        List<ArticleData> articleDataList = new ArrayList<>();
+        for (String id : follows_id) {
+            articleRepository.findById(id).ifPresent(
+                    article -> {
+                        ArticleData articleData = articleDTOMapper.entityToDTO(article);
+                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+                        articleRepository.findTagList(article.getId()).ifPresent(tagList -> articleData.setTagList(tagList));
+                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
+                        articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
+                        articleDataList.add(articleData);
+                    });
+        }
+        return new ArticleList(articleDataList, articleDataList.size());
     }
 }

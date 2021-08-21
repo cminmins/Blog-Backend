@@ -1,11 +1,13 @@
 package com.example.blog.api.article;
 
+import com.example.blog.domain.article.Article;
 import com.example.blog.domain.user.User;
 import com.example.blog.service.articles.ArticleService;
 import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.requestDTO.RequestCreateArticles;
 import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
+import com.example.blog.service.responseDTO.ArticleList;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,12 +37,23 @@ public class ArticleApi {
         };
     }
 
-
     @PostMapping
     public ResponseEntity createArticle(@AuthenticationPrincipal User user,
                                         @Valid @RequestBody RequestCreateArticles requestCreateArticles) {
         ArticleData articleData = articleService.createArticle(user, requestCreateArticles);
         return ResponseEntity.ok().body(SingleArticleResponse(articleData));
+    }
+
+    @GetMapping
+    public ResponseEntity listArticle(
+            @RequestParam(value = "offset", defaultValue = "0") int offset,
+            @RequestParam(value = "limit", defaultValue = "20") int limit,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "favorited", required = false) String favorited,
+            @RequestParam(value = "author", required = false) String author,
+            @AuthenticationPrincipal User user) {
+        ArticleList articleList = articleService.listArticle(tag, favorited, author, offset, limit, user);
+        return ResponseEntity.ok().body(articleList);
     }
 
     @GetMapping("/{slug}")
@@ -54,5 +68,19 @@ public class ArticleApi {
                                         @Valid @RequestBody RequestUpdateArticle requestUpdateArticle) {
         ArticleData articleData = articleService.updateArticle(slug, requestUpdateArticle);
         return ResponseEntity.ok().body(SingleArticleResponse(articleData));
+    }
+
+    @DeleteMapping("/{slug}")
+    public ResponseEntity deleteArticle(@PathVariable("slug") String slug) {
+        articleService.deleteArticle(slug);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity getFeedArticels(@AuthenticationPrincipal User user,
+                                          @RequestParam(value = "limit", defaultValue = "20") int limit,
+                                          @RequestParam(value = "offset", defaultValue = "0") int offset) {
+        ArticleList articleList = articleService.getFeedArticles(user, limit, offset);
+        return ResponseEntity.ok().body(articleList);
     }
 }

@@ -34,12 +34,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] PERMIT_GET_URI = {
             "/aritcles/**",
             "/profiles/**",
-            "tags"
+            "/tags"
     };
 
     private static final String[] PERMIT_POST_URI = {
-            "/api/users",
-            "/api/users/login"
+            "/users",
+            "/users/login"
     };
 
     @Override

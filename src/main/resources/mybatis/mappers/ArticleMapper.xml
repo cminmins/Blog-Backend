@@ -18,12 +18,42 @@
 
     <update id="updateArticle">
         update articles
-        set articles.title       = #{article.title},
-            articles.slug        = #{article.slug},
-            articles.description = #{article.description},
-            articles.body        = #{article.body}
-        where articles.id = #{id};
+        set title       = #{article.title},
+            slug        = #{article.slug},
+            description = #{article.description},
+            body        = #{article.body}
+        where articleId = #{id};
     </update>
+
+    <delete id="deleteArticle">
+        delete
+        from articles
+        where slug = #{slug};
+    </delete>
+
+    <select id="findByQuery" resultType="String">
+        select distinct A.articleId
+        from articles A
+            left join article_tag AT on A.articleId = AT.articleId
+            left join tags T on T.tagId = AT.tagId
+            left join articlefavorites AF on AF.articleId = AT.articleId
+            left join users AU on AU.id = A.authorId
+            left join users FU on FU.id = AF.userId
+        <where>
+            <if test="tag != null">T.name = #{tag};</if>
+            <if test="author != null"> AU.username = #{author}</if>
+            <if test="favorited != null"> FU.username = #{favorited}</if>
+        </where>
+        order by A.createdAt desc
+        limit #{limit} offset #{offset}
+    </select>
+
+    <select id="getUserFeed" resultType="String">
+        select follow_id
+        from follows
+        where user_id = #{userId}
+        limit #{limit} offset #{offset}
+    </select>
 
     <select id="findBySlug" resultMap="article">
         select authorId,
@@ -85,6 +115,19 @@
         #{tagId}
         )
     </insert>
+
+    <select id="findById" resultMap="article">
+        select authorId,
+               articleId,
+               slug,
+               title,
+               description,
+               body,
+               createdAt,
+               updatedAt
+        from articles
+        where articleId = #{articleId};
+    </select>
 
     <resultMap id="article" type="com.example.blog.domain.article.Article">
         <result property="authorId" column="authorId"/>

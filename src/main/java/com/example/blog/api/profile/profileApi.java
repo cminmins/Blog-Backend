@@ -3,11 +3,13 @@ package com.example.blog.api.profile;
 import com.example.blog.domain.user.User;
 import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.responseDTO.ProfileData;
+import com.example.blog.service.responseDTO.UserDataWithToken;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/profiles/{username}")
@@ -18,10 +20,12 @@ public class profileApi {
         this.followUserService = followUserService;
     }
 
-    private ResponseEntity profileResponse(ProfileData profile) {
-        return ResponseEntity.ok(new HashMap<String, Object>() {{
-            put("profile", profile);
-        }});
+    private Map<String, Object> profileResponse(ProfileData profile) {
+        return new HashMap<String, Object>() {
+            {
+                put("profile", profile);
+            }
+        };
     }
 
     @GetMapping

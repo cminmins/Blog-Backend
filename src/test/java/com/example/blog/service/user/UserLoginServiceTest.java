@@ -2,7 +2,6 @@ package com.example.blog.service.user;
 
 import com.example.blog.api.exception.InvalidAuthenticationException;
 import com.example.blog.api.user.UserDTOMapper;
-import com.example.blog.databaseTest;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.mybatis.mapper.user.MybatisUserRepository;
 import com.example.blog.repository.repository.UserRepository;
@@ -16,14 +15,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 //@Testcontainers
 @Import({MybatisUserRepository.class})
 @Transactional
-class UserLoginServiceTest extends databaseTest {
+class UserLoginServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Container

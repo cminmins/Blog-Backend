@@ -1,5 +1,6 @@
 package com.example.blog.service.responseDTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Setter;
 
@@ -20,7 +21,8 @@ public class ArticleData {
     String createdAt;
     String updatedAt;
 
-    Map<String, Object> author;
+    @JsonProperty("author")
+    ProfileData author;
 
     boolean favorited;
     int favoritesCount;
