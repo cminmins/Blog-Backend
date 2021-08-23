@@ -1,10 +1,8 @@
 package com.example.blog.service.articles;
 
 import com.example.blog.api.article.ArticleDTOMapper;
-import com.example.blog.domain.article.Article;
-import com.example.blog.domain.article.Article_favorited;
-import com.example.blog.domain.article.Author;
-import com.example.blog.domain.article.Tag;
+import com.example.blog.api.article.CommentsDTOMapper;
+import com.example.blog.domain.article.*;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.ArticleRepository;
 import com.example.blog.repository.repository.FollowRepository;
@@ -13,6 +11,7 @@ import com.example.blog.service.requestDTO.RequestCreateArticles;
 import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
 import com.example.blog.service.responseDTO.ArticleList;
+import com.example.blog.service.responseDTO.CommentData;
 import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.stereotype.Service;
 
@@ -25,11 +24,13 @@ import java.util.Map;
 public class ArticleService {
     private ArticleRepository articleRepository;
     private ArticleDTOMapper articleDTOMapper;
+    private CommentsDTOMapper commentsDTOMapper;
     private FollowUserService followUserService;
 
-    public ArticleService(ArticleRepository articleRepository, ArticleDTOMapper articleDTOMapper, FollowUserService followUserService) {
+    public ArticleService(ArticleRepository articleRepository, ArticleDTOMapper articleDTOMapper, CommentsDTOMapper commentsDTOMapper, FollowUserService followUserService) {
         this.articleRepository = articleRepository;
         this.articleDTOMapper = articleDTOMapper;
+        this.commentsDTOMapper = commentsDTOMapper;
         this.followUserService = followUserService;
     }
 
@@ -123,5 +124,44 @@ public class ArticleService {
                     });
         }
         return new ArticleList(articleDataList, articleDataList.size());
+    }
+
+    public CommentData createComments(User user, String slug, String body) {
+        Comment comment = new Comment(user.getId(), body);
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return null;
+        }
+        articleRepository.createComments(article.getId(), comment);
+        CommentData commentData = commentsDTOMapper.entityToDTO(comment);
+        commentData.setProfileData(followUserService.getProfileById(user.getId(), article.getAuthorId()));
+        return commentData;
+    }
+
+    public List<CommentData> getComments(String slug) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return null;
+        }
+        List<CommentData> commentDataList = new ArrayList<>();
+        List<Comment> commentList = articleRepository.findCommentsByArticleId(article.getId()).orElse(null);
+        if (commentDataList == null) {
+            return null;
+        }
+        for(Comment comment : commentList){
+            CommentData commentData = commentsDTOMapper.entityToDTO(comment);
+            commentData.setProfileData(followUserService.getProfileById(comment.getUser_id(), article.getAuthorId()));
+            commentDataList.add(commentData);
+        }
+        return commentDataList;
+    }
+
+    public void deleteComment(String slug, String id) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return;
+        }
+        articleRepository.deleteComment(article.getId(), id);
+        return;
     }
 }

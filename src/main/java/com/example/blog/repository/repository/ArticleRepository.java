@@ -1,6 +1,7 @@
 package com.example.blog.repository.repository;
 
 import com.example.blog.domain.article.Article;
+import com.example.blog.domain.article.Comment;
 import com.example.blog.domain.article.Tag;
 import org.springframework.stereotype.Repository;
 
@@ -27,4 +28,10 @@ public interface ArticleRepository {
     Optional<Article> findById(String articleId);
 
     Optional<List> getUserFeed(String id, int limit, int offset);
+
+    void createComments(String id, Comment comment);
+
+    Optional<List> findCommentsByArticleId(String id);
+
+    void deleteComment(String slug, String id);
 }

@@ -139,4 +139,35 @@
         <result property="createdAt" column="createdAt"/>
         <result property="updatedAt" column="updatedAt"/>
     </resultMap>
+
+    <insert id="createComments">
+        insert into comments(id, articleId, body, userId, createdAt, updatedAt)
+            VALUE (
+                   #{comment.id},
+                   #{article_id},
+                   #{comment.body},
+                   #{comment.user_id},
+                   #{comment.createdAt},
+                   #{comment.updatedAt});
+    </insert>
+
+    <select id="getComments" resultMap = "comment">
+        select id, createdAt, updatedAt, body
+        from comments
+        where articleId = #{id}
+    </select>
+
+    <delete id="deleteComment">
+        delete
+        from comments
+        where articleId = #{articleId}
+          and id = #{commentId};
+    </delete>
+
+    <resultMap id="comment" type="com.example.blog.domain.article.Comment" >
+    <id column="id" property="id"/>
+    <result column="createdAt" property="createdAt"/>
+    <result column="updatedAt" property="updatedAt"/>
+    <result column="body" property="body"/>
+    </resultMap>
 </mapper>

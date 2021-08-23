@@ -29,7 +29,7 @@ create table articles
     description text,
     body        text,
     createdAt    TIMESTAMP    not null,
-    updatedAt    TIMESTAMP    not null
+    updatedAt    TIMESTAMP    not null DEFAULT CURRENT_TIMESTAMP
 );
 
 create table article_tag
@@ -51,3 +51,11 @@ create table articleFavorites
     primary key (userId, articleId)
 );
 
+create table comments (
+    id varchar(255) primary key,
+    articleId varchar(255),
+    body text,
+    userId varchar(255),
+    createdAt TIMESTAMP NOT NULL,
+    updatedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

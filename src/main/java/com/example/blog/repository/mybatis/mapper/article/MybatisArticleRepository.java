@@ -1,6 +1,7 @@
 package com.example.blog.repository.mybatis.mapper.article;
 
 import com.example.blog.domain.article.Article;
+import com.example.blog.domain.article.Comment;
 import com.example.blog.domain.article.Tag;
 import com.example.blog.repository.repository.ArticleRepository;
 import org.springframework.stereotype.Repository;
@@ -82,5 +83,20 @@ public class MybatisArticleRepository implements ArticleRepository {
     @Override
     public Optional<List> getUserFeed(String id, int limit, int offset) {
         return Optional.ofNullable(articleMapper.getUserFeed(id, limit, offset));
+    }
+
+    @Override
+    public void createComments(String id, Comment comment) {
+        articleMapper.createComments(id, comment);
+    }
+
+    @Override
+    public Optional<List> findCommentsByArticleId(String id) {
+        return Optional.ofNullable(articleMapper.getComments(id));
+    }
+
+    @Override
+    public void deleteComment(String articleId, String id) {
+        articleMapper.deleteComment(articleId, id);
     }
 }

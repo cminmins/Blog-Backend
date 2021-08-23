@@ -1,15 +1,13 @@
 package com.example.blog.repository.mybatis.mapper.article;
 
-import com.example.blog.domain.article.Article;
-import com.example.blog.domain.article.Article_favorited;
-import com.example.blog.domain.article.Author;
-import com.example.blog.domain.article.Tag;
+import com.example.blog.domain.article.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface ArticleMapper {
@@ -45,4 +43,11 @@ public interface ArticleMapper {
     List<String> getUserFeed(@Param("userId") String id,
                              @Param("limit") int limit,
                              @Param("offset") int offset);
+
+    void createComments(@Param("article_id") String article_id, @Param("comment") Comment comment);
+
+    List<Comment> getComments(@Param("id") String id);
+
+    void deleteComment(@Param("articleId") String articleId,
+                       @Param("commentId") String id);
 }
