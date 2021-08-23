@@ -50,4 +50,10 @@ public interface ArticleMapper {
 
     void deleteComment(@Param("articleId") String articleId,
                        @Param("commentId") String id);
+
+    void favoriteArticle(@Param("userId") String userId,
+                         @Param("articleId") String articleId);
+
+    void unfavoriteArticle(@Param("userId") String userId,
+                           @Param("articleId") String articleId);
 }

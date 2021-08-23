@@ -38,6 +38,7 @@ public class ArticleApi {
             }
         };
     }
+
     private Map<String, Object> SingleCommentsResponse(CommentData commentData) {
         return new HashMap<String, Object>() {
             {
@@ -104,13 +105,13 @@ public class ArticleApi {
     @PostMapping("/{slug}/comments")
     public ResponseEntity createComments(@AuthenticationPrincipal User user,
                                          @PathVariable("slug") String slug,
-                                         @RequestBody RequestComments requestComments){
+                                         @RequestBody RequestComments requestComments) {
         CommentData commentData = articleService.createComments(user, slug, requestComments.getBody());
         return ResponseEntity.status(201).body(SingleCommentsResponse(commentData));
     }
 
     @GetMapping("/{slug}/comments")
-    public ResponseEntity getComments(@PathVariable("slug") String slug){
+    public ResponseEntity getComments(@PathVariable("slug") String slug) {
         List<CommentData> commentDataList = articleService.getComments(slug);
         return ResponseEntity.ok().body(MultiCommentsResponse(commentDataList));
     }
@@ -120,5 +121,19 @@ public class ArticleApi {
                                          @PathVariable("id") String id) {
         articleService.deleteComment(slug, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity favoriteArticle(@PathVariable("slug") String slug,
+                                          @AuthenticationPrincipal User user) {
+        ArticleData articleData = articleService.favoriteArticle(user, slug);
+        return ResponseEntity.status(201).body(SingleArticleResponse(articleData));
+    }
+
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity unfavoriteArticle(@PathVariable("slug") String slug,
+                                            @AuthenticationPrincipal User user) {
+        ArticleData articleData = articleService.unfavoriteArticle(user, slug);
+        return ResponseEntity.ok().body(SingleArticleResponse(articleData));
     }
 }

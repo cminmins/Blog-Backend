@@ -5,20 +5,16 @@ import com.example.blog.api.article.CommentsDTOMapper;
 import com.example.blog.domain.article.*;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.ArticleRepository;
-import com.example.blog.repository.repository.FollowRepository;
 import com.example.blog.service.profile.FollowUserService;
 import com.example.blog.service.requestDTO.RequestCreateArticles;
 import com.example.blog.service.requestDTO.RequestUpdateArticle;
 import com.example.blog.service.responseDTO.ArticleData;
 import com.example.blog.service.responseDTO.ArticleList;
 import com.example.blog.service.responseDTO.CommentData;
-import com.example.blog.service.responseDTO.ProfileData;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ArticleService {
@@ -49,7 +45,7 @@ public class ArticleService {
                     });
             articleRepository.saveArticleTag(article.getId(), tagId); }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
         return articleData;
     }
 
@@ -59,10 +55,10 @@ public class ArticleService {
             return null;
         }
         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
         articleRepository.findTagList(article.getId())
                 .ifPresent(tagList -> articleData.setTagList(tagList));
-        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
+        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getId()));
         articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
         return articleData;
     }
@@ -96,9 +92,9 @@ public class ArticleService {
             articleRepository.findById(articleId).ifPresent(
                     article -> {
                         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
                         articleRepository.findTagList(article.getId()).ifPresent(tagList -> articleData.setTagList(tagList));
-                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
+                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getId()));
                         articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
                         articleDataList.add(articleData);
                     });
@@ -116,9 +112,9 @@ public class ArticleService {
             articleRepository.findById(id).ifPresent(
                     article -> {
                         ArticleData articleData = articleDTOMapper.entityToDTO(article);
-                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), article.getAuthorId()));
+                        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
                         articleRepository.findTagList(article.getId()).ifPresent(tagList -> articleData.setTagList(tagList));
-                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getAuthorId()));
+                        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getId()));
                         articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
                         articleDataList.add(articleData);
                     });
@@ -163,5 +159,35 @@ public class ArticleService {
         }
         articleRepository.deleteComment(article.getId(), id);
         return;
+    }
+
+    public ArticleData favoriteArticle(User user, String slug) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return null;
+        }
+        articleRepository.favoriteArticle(user.getId(), article.getId());
+        ArticleData articleData = articleDTOMapper.entityToDTO(article);
+        articleRepository.findTagList(article.getId())
+                .ifPresent(tagList -> articleData.setTagList(tagList));
+        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getId()));
+        articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
+        return articleData;
+    }
+
+    public ArticleData unfavoriteArticle(User user, String slug) {
+        Article article = articleRepository.findBySlug(slug).orElse(null);
+        if (article == null) {
+            return null;
+        }
+        articleRepository.unfavoriteArticle(user.getId(), article.getId());
+        ArticleData articleData = articleDTOMapper.entityToDTO(article);
+        articleRepository.findTagList(article.getId())
+                .ifPresent(tagList -> articleData.setTagList(tagList));
+        articleData.setFavorited(articleRepository.isFollowingArticle(user.getId(), article.getId()));
+        articleData.setFavoritesCount(articleRepository.countArticleFavorites(article.getId()));
+        articleData.setAuthor(followUserService.getProfileById(article.getAuthorId(), user.getId()));
+        return articleData;
     }
 }

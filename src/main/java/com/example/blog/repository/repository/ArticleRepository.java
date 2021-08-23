@@ -34,4 +34,8 @@ public interface ArticleRepository {
     Optional<List> findCommentsByArticleId(String id);
 
     void deleteComment(String slug, String id);
+
+    void favoriteArticle(String userId, String articleId);
+
+    void unfavoriteArticle(String userId, String articleId);
 }

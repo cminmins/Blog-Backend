@@ -142,7 +142,7 @@
 
     <insert id="createComments">
         insert into comments(id, articleId, body, userId, createdAt, updatedAt)
-            VALUE (
+            value (
                    #{comment.id},
                    #{article_id},
                    #{comment.body},
@@ -162,6 +162,19 @@
         from comments
         where articleId = #{articleId}
           and id = #{commentId};
+    </delete>
+
+    <insert id="favoriteArticle">
+        insert into articlefavorites (userId, articleId)
+            value (#{userId},
+                   #{articleId});
+    </insert>
+
+    <delete id="unfavoriteArticle">
+        delete
+        from articlefavorites
+        where userId = #{userId}
+          and articleId = #{articleId};
     </delete>
 
     <resultMap id="comment" type="com.example.blog.domain.article.Comment" >

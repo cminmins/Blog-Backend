@@ -99,4 +99,14 @@ public class MybatisArticleRepository implements ArticleRepository {
     public void deleteComment(String articleId, String id) {
         articleMapper.deleteComment(articleId, id);
     }
+
+    @Override
+    public void favoriteArticle(String userId, String articleId) {
+        articleMapper.favoriteArticle(userId, articleId);
+    }
+
+    @Override
+    public void unfavoriteArticle(String userId, String articleId) {
+        articleMapper.unfavoriteArticle(userId, articleId);
+    }
 }
