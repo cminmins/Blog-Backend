@@ -1,8 +1,9 @@
 package com.example.blog.service.user;
 
-import com.example.blog.api.exception.InvalidAuthenticationException;
 import com.example.blog.api.user.UserDTOMapper;
 import com.example.blog.domain.user.User;
+import com.example.blog.exception.InvalidAuthenticationException;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.repository.mybatis.mapper.user.MybatisUserRepository;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.requestDTO.RequestUserLogin;
@@ -41,7 +42,7 @@ class UserLoginServiceTest {
 
 
         User user = userRepository.findByEmail(correct_request.getEmail())
-                .orElseThrow(() -> new InvalidAuthenticationException());
+                .orElseThrow(() -> new ResourceNotFoundException());
         if (user.isNotMatchPassword(correct_request.getPassword())) {
             throw new InvalidAuthenticationException();
         }
