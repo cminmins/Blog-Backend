@@ -41,8 +41,8 @@ class UserLoginServiceTest {
         RequestUserLogin wrong_password_request = new RequestUserLogin("testaccount@test.com", "14");
 
 
-        User user = userRepository.findByEmail(correct_request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException());
+        User user = userRepository.findByEmail(correct_request.getEmail()).orElseThrow(ResourceNotFoundException::new);
+
         if (user.isNotMatchPassword(correct_request.getPassword())) {
             throw new InvalidAuthenticationException();
         }

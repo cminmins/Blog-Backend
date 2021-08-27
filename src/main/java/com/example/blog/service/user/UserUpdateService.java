@@ -2,6 +2,7 @@ package com.example.blog.service.user;
 
 import com.example.blog.api.user.UserDTOMapper;
 import com.example.blog.domain.user.User;
+import com.example.blog.exception.ResourceNotFoundException;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.requestDTO.RequestUserUpdate;
 import com.example.blog.service.responseDTO.UserData;
@@ -18,7 +19,8 @@ public class UserUpdateService {
     }
 
     public UserData updateUser(String id, RequestUserUpdate requestUserUpdate) {
-        User user = userRepository.findById(id).orElseGet(null);
+        User user = userRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
         user.update(requestUserUpdate.getEmail(),
                 requestUserUpdate.getUsername(),
                 requestUserUpdate.getPassword(),

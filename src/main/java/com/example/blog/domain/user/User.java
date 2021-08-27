@@ -47,6 +47,10 @@ public class User {
         }
     }
 
+    public boolean isEmpty() {
+        return (this == null) ? true : false;
+    }
+
     public boolean isNotMatchPassword(String password) {
         return !this.password.equals(password);
     }

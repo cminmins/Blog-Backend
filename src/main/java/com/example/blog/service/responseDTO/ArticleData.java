@@ -13,13 +13,14 @@ import java.util.Map;
 @Data
 @Setter
 public class ArticleData {
-    String slug;
-    String title;
-    String description;
-    String body;
-    List<String> tagList;
-    String createdAt;
-    String updatedAt;
+    private String id;
+    private String slug;
+    private String title;
+    private String description;
+    private String body;
+    private List<String> tagList;
+    private String createdAt;
+    private String updatedAt;
 
     @JsonProperty("author")
     ProfileData author;
