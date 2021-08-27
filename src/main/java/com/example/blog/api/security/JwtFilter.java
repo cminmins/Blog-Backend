@@ -30,8 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
         parseTokenString(request).ifPresent(token -> {
             jwtTokenProvider.getSubFromToken(token).ifPresent(id -> {
                 Authentication authentication = jwtTokenProvider.getAuthentication(id);
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             });
         });
 

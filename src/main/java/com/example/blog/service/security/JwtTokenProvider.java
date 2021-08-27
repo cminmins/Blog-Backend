@@ -1,6 +1,5 @@
 package com.example.blog.service.security;
 
-import com.example.blog.api.exception.InvalidAuthTokenException;
 import com.example.blog.domain.user.User;
 import com.example.blog.repository.repository.UserRepository;
 import com.example.blog.service.responseDTO.UserData;
@@ -46,6 +45,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
 //                .setIssuer("sungmin.com")
                 .setSubject(user.getId())
+                .setClaims()
                 .setExpiration(expireTimeFromNow())
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
@@ -92,7 +92,10 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String id) {
         return userRepository.findById(id)
-                .map(user -> new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList())).orElse(null);
+                .map(user -> new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        Collections.emptyList())).orElse(null);
     }
 
     public Date expireTimeFromNow() {
