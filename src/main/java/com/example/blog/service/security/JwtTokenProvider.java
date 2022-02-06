@@ -43,9 +43,7 @@ public class JwtTokenProvider {
 
     public String buildToken(UserData user) {
         return Jwts.builder()
-//                .setIssuer("sungmin.com")
                 .setSubject(user.getId())
-                .setClaims()
                 .setExpiration(expireTimeFromNow())
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
@@ -64,7 +62,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public boolean isVaildToken(String token) {
+    public boolean isValidToken(String token) {
         if (StringUtils.hasText(token)) {
             try {
                 Jwts.parser()
